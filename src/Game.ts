@@ -38,7 +38,7 @@ export default class Game {
 	private update() {
 		//movement
 		this.movePieceBy(0, 1, true);
-		this.activePiece.rotateRight();
+		this.rotatePiece("right");
 
 		//draw
 		this.draw();
@@ -55,6 +55,34 @@ export default class Game {
 		this.activePiece.y += y;
 		this.activePiece.x += x;
 
+		if (this.isPieceColliding()) {
+			this.activePiece.x -= x;
+			this.activePiece.y -= y;
+
+			if (fatal) {
+				this.grid.passifyPiece(this.activePiece);
+				this.generateNewPiece();
+			}
+		}
+	}
+
+	private rotatePiece(dir: "left" | "right") {
+		if (dir == "left") {
+			this.activePiece.rotateLeft();
+		} else {
+			this.activePiece.rotateRight();
+		}
+
+		if (this.isPieceColliding()) {
+			if (dir == "left") {
+				this.activePiece.rotateRight();
+			} else {
+				this.activePiece.rotateLeft();
+			}
+		}
+	}
+
+	private isPieceColliding() {
 		let collided = false;
 		this.activePiece.offsets.forEach((offset) => {
 			if (
@@ -76,15 +104,7 @@ export default class Game {
 			}
 		});
 
-		if (collided) {
-			this.activePiece.x -= x;
-			this.activePiece.y -= y;
-
-			if (fatal) {
-				this.grid.passifyPiece(this.activePiece);
-				this.generateNewPiece();
-			}
-		}
+		return collided;
 	}
 
 	private generateNewPiece() {
