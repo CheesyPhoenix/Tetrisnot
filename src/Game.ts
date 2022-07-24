@@ -9,6 +9,8 @@ export default class Game {
 	grid: Grid;
 	activePiece: Piece;
 
+	loopInterval: number;
+
 	constructor(
 		width: number,
 		height: number,
@@ -22,7 +24,7 @@ export default class Game {
 		this.renderer = new Rendrer(width, height, scale, canvas);
 		this.grid = new Grid(width, height);
 
-		this.activePiece = new TPiece(2, 2);
+		this.activePiece = new TPiece(width / 2, 2);
 
 		this.grid.updateActive(this.activePiece);
 		this.renderer.draw(this.grid);
@@ -30,7 +32,7 @@ export default class Game {
 		this.setupInput();
 
 		//start game loop
-		setInterval(() => {
+		this.loopInterval = setInterval(() => {
 			this.update();
 		}, 1000 / fps);
 	}
@@ -38,7 +40,6 @@ export default class Game {
 	private update() {
 		//movement
 		this.movePieceBy(0, 1, true);
-		this.rotatePiece("right");
 
 		//draw
 		this.draw();
@@ -49,7 +50,38 @@ export default class Game {
 		this.renderer.draw(this.grid);
 	}
 
-	private setupInput() {}
+	private setupInput() {
+		document.addEventListener("keypress", (ev) => {
+			switch (ev.key) {
+				case "a":
+					this.movePieceBy(-1, 0, false);
+					break;
+				case "d":
+					this.movePieceBy(1, 0, false);
+					break;
+
+				case " ":
+					this.dropPiece();
+					break;
+
+				case "s":
+					this.rotatePiece("left");
+					break;
+				case "w":
+					this.rotatePiece("right");
+					break;
+
+				default:
+					return;
+			}
+
+			this.draw();
+		});
+	}
+
+	private dropPiece() {
+		while (this.movePieceBy(0, 1, true)) {}
+	}
 
 	private movePieceBy(x: number, y: number, fatal: boolean) {
 		this.activePiece.y += y;
@@ -63,6 +95,10 @@ export default class Game {
 				this.grid.passifyPiece(this.activePiece);
 				this.generateNewPiece();
 			}
+
+			return false;
+		} else {
+			return true;
 		}
 	}
 

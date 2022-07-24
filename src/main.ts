@@ -8,6 +8,6 @@ const height = 20;
 
 const scale = 25;
 
-const fps = 10;
+const fps = 3;
 
 const game = new Game(width, height, scale, canvas, fps);
