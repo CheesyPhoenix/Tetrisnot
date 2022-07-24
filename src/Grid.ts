@@ -33,7 +33,7 @@ export default class Grid {
 	updateActive(piece: Piece) {
 		//clear active cells
 		this.iterateAll((cell) => {
-			if (cell.active) cell.clear();
+			if (cell.active) cell.reset();
 		});
 
 		//set new active cells
@@ -49,6 +49,12 @@ export default class Grid {
 
 		piece.offsets.forEach((offset) => {
 			this.grid[piece.x + offset.x][piece.y + offset.y].makePassive();
+		});
+	}
+
+	clearGrid() {
+		this.iterateAll((cell) => {
+			cell.reset();
 		});
 	}
 }

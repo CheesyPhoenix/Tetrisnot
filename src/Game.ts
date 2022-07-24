@@ -7,9 +7,12 @@ export default class Game {
 	height: number;
 	renderer: Rendrer;
 	grid: Grid;
-	activePiece: Piece;
+	activePiece!: Piece;
 
-	loopInterval: number;
+	loopInterval!: number;
+	fps: number;
+
+	running!: boolean;
 
 	constructor(
 		width: number,
@@ -24,17 +27,33 @@ export default class Game {
 		this.renderer = new Rendrer(width, height, scale, canvas);
 		this.grid = new Grid(width, height);
 
-		this.activePiece = new TPiece(width / 2, 2);
+		this.setupInput();
+
+		this.fps = fps;
+
+		//start game loop
+		this.start();
+	}
+
+	start() {
+		this.grid.clearGrid();
+
+		this.generateNewPiece();
 
 		this.grid.updateActive(this.activePiece);
 		this.renderer.draw(this.grid);
 
-		this.setupInput();
-
-		//start game loop
 		this.loopInterval = setInterval(() => {
 			this.update();
-		}, 1000 / fps);
+		}, 1000 / this.fps);
+
+		this.running = true;
+	}
+
+	stop() {
+		clearInterval(this.loopInterval);
+
+		this.running = false;
 	}
 
 	private update() {
@@ -52,6 +71,8 @@ export default class Game {
 
 	private setupInput() {
 		document.addEventListener("keypress", (ev) => {
+			if (!this.running) return;
+
 			switch (ev.key) {
 				case "a":
 					this.movePieceBy(-1, 0, false);
@@ -144,6 +165,8 @@ export default class Game {
 	}
 
 	private generateNewPiece() {
-		this.activePiece = new TPiece(2, 2);
+		this.activePiece = new TPiece(this.width / 2, 2);
+
+		if (this.isPieceColliding()) this.stop();
 	}
 }

@@ -11,3 +11,14 @@ const scale = 25;
 const fps = 3;
 
 const game = new Game(width, height, scale, canvas, fps);
+
+(document.getElementById("restartBtn") as HTMLButtonElement).onclick = () => {
+	game.stop();
+	game.start();
+};
+
+(document.getElementById("restartBtn") as HTMLButtonElement).onmousedown = (
+	ev
+) => {
+	ev.preventDefault();
+};

@@ -9,9 +9,10 @@ export default class Cell {
 		this.occupied = false;
 	}
 
-	clear() {
+	reset() {
 		this.color = "#ffffff";
 		this.active = false;
+		this.occupied = false;
 	}
 
 	activate(color: string) {
