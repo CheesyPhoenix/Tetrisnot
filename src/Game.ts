@@ -1,3 +1,4 @@
+import GameManager from "./GameManager";
 import Grid from "./Grid";
 import { Piece, TPiece } from "./Pieces";
 import Rendrer from "./Renderer";
@@ -12,20 +13,22 @@ export default class Game {
 	loopInterval!: number;
 	fps: number;
 
-	running!: boolean;
+	gameManager: GameManager;
 
 	constructor(
 		width: number,
 		height: number,
 		scale: number,
 		canvas: HTMLCanvasElement,
-		fps: number
+		fps: number,
+		scoreElement: HTMLElement
 	) {
 		this.width = width;
 		this.height = height;
 
+		this.gameManager = new GameManager(scoreElement);
 		this.renderer = new Rendrer(width, height, scale, canvas);
-		this.grid = new Grid(width, height);
+		this.grid = new Grid(width, height, this.gameManager);
 
 		this.setupInput();
 
@@ -47,13 +50,15 @@ export default class Game {
 			this.update();
 		}, 1000 / this.fps);
 
-		this.running = true;
+		this.gameManager.restart();
 	}
 
 	stop() {
 		clearInterval(this.loopInterval);
 
-		this.running = false;
+		this.gameManager.gameOver();
+
+		this.renderer.gameOver();
 	}
 
 	private update() {
@@ -65,13 +70,15 @@ export default class Game {
 	}
 
 	private draw() {
+		if (!this.gameManager.running) return;
+
 		this.grid.updateActive(this.activePiece);
 		this.renderer.draw(this.grid);
 	}
 
 	private setupInput() {
 		document.addEventListener("keypress", (ev) => {
-			if (!this.running) return;
+			if (!this.gameManager.running) return;
 
 			switch (ev.key) {
 				case "a":
@@ -165,7 +172,7 @@ export default class Game {
 	}
 
 	private generateNewPiece() {
-		this.activePiece = new TPiece(this.width / 2, 2);
+		this.activePiece = new TPiece(this.width / 2 - 1, 2);
 
 		if (this.isPieceColliding()) this.stop();
 	}

@@ -35,4 +35,14 @@ export default class Rendrer {
 			);
 		});
 	}
+
+	gameOver() {
+		this.ctx.fillStyle = "#00000088";
+		this.ctx.fillRect(0, 0, this.widthpx, this.heightpx);
+
+		this.ctx.fillStyle = "#ff0000ff";
+		this.ctx.textAlign = "center";
+		this.ctx.font = "45px Fantasy";
+		this.ctx.fillText("Game Over!", this.widthpx / 2, this.heightpx / 2);
+	}
 }

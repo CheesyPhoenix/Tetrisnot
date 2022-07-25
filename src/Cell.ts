@@ -24,4 +24,10 @@ export default class Cell {
 		this.active = false;
 		this.occupied = true;
 	}
+
+	copy(cell: Cell) {
+		this.active = cell.active;
+		this.color = cell.color;
+		this.occupied = cell.occupied;
+	}
 }
