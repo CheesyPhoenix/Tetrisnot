@@ -1,6 +1,6 @@
 import GameManager from "./GameManager";
 import Grid from "./Grid";
-import { Piece, TPiece } from "./Pieces";
+import Pieces, { Piece } from "./Pieces";
 import Rendrer from "./Renderer";
 
 export default class Game {
@@ -172,7 +172,9 @@ export default class Game {
 	}
 
 	private generateNewPiece() {
-		this.activePiece = new TPiece(this.width / 2 - 1, 2);
+		this.activePiece = new Pieces[
+			Math.floor(Math.random() * Pieces.length)
+		](this.width / 2 - 1, 2);
 
 		if (this.isPieceColliding()) this.stop();
 	}

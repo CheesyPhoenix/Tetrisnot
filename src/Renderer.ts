@@ -33,6 +33,14 @@ export default class Rendrer {
 				this.scale,
 				this.scale
 			);
+
+			this.ctx.strokeStyle = "#00000033";
+			this.ctx.strokeRect(
+				x * this.scale,
+				y * this.scale,
+				this.scale,
+				this.scale
+			);
 		});
 	}
 
